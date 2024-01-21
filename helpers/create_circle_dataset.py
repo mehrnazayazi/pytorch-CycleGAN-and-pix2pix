@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import random
 from PIL import Image, ImageDraw
+import argparse
 
 
 def cut_random_pattern_portion(pattern_path):
@@ -59,22 +60,55 @@ def create_random_fading_white_circle_image(size):
     return mask_blur
 
 
-image_size = (256, 256)
 
-# Number of images with random circles
-train_num = 1000
-test_num = 200
+def main():
+    # Create an ArgumentParser object
+    parser = argparse.ArgumentParser(description='create data points for cycleGAN training with patterns')
 
-# Create and save multiple images
-for image_index in range(train_num):
-    dst = create_random_fading_patterned_circle_image(image_size)
-    cv2.imwrite(f"../datasets/white2pattern/trainB/0{image_index + 1}.png", dst)
-    white = create_random_fading_white_circle_image(image_size)
-    cv2.imwrite(f"../datasets/white2pattern/trainA/0{image_index + 1}.png", white)
+    # Add options to the parser
+    parser.add_argument('--train', action='store_true' , help='create training data')
+    parser.add_argument('--test',  action='store_true' , help='create test data')
+    parser.add_argument('--val',   action='store_true' , help='create validation data')
 
 
-for image_index in range(test_num):
-    dst = create_random_fading_patterned_circle_image(image_size)
-    cv2.imwrite(f"../datasets/white2pattern/testB/0{image_index + 1}.png", dst)
-    white = create_random_fading_white_circle_image(image_size)
-    cv2.imwrite(f"../datasets/white2pattern/testA/0{image_index + 1}.png", white)
+    # Parse the command-line arguments
+    args = parser.parse_args()
+
+    # Access the values of options
+    train = args.train
+    test = args.test
+    val = args.val
+
+    image_size = (256, 256)
+
+    # Number of images with random circles
+    train_num = 1000
+    test_num = 200
+    Validation_num = 200
+
+    # Create and save multiple images
+    if train:
+        for image_index in range(train_num):
+            dst = create_random_fading_patterned_circle_image(image_size)
+            cv2.imwrite(f"../datasets/white2pattern/trainB/0{image_index + 1}.png", dst)
+            white = create_random_fading_white_circle_image(image_size)
+            cv2.imwrite(f"../datasets/white2pattern/trainA/0{image_index + 1}.png", white)
+
+    if test:
+        for image_index in range(test_num):
+            dst = create_random_fading_patterned_circle_image(image_size)
+            cv2.imwrite(f"../datasets/white2pattern/testB/0{image_index + 1}.png", dst)
+            white = create_random_fading_white_circle_image(image_size)
+            cv2.imwrite(f"../datasets/white2pattern/testA/0{image_index + 1}.png", white)
+
+    if val:
+        for image_index in range(Validation_num):
+            dst = create_random_fading_patterned_circle_image(image_size)
+            cv2.imwrite(f"../datasets/white2pattern/valA/0{image_index + 1}.png", dst)
+            white = create_random_fading_white_circle_image(image_size)
+            cv2.imwrite(f"../datasets/white2pattern/valB/0{image_index + 1}.png", white)
+
+
+
+if __name__ == "__main__":
+    main()
